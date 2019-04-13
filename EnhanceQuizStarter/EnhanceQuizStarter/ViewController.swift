@@ -12,77 +12,157 @@ import GameKit
 class ViewController: UIViewController {
     
     // MARK: - Properties
-    let soundManager = SoundManager(gameSound: 10)
-    let quizManager = QuizManager(questionProvider: QuestionProvider())
-    var trivia = Question(question: "", options: ["", ""], correctOption: "")
+    let soundManager = SoundManager(gameSound: 1, tapSound: 1, negativeSound: 1, positiveSound: 1)
+    let quizManager = QuizManager()
+    var trivia = Question(id:0, question: "", options: ["", ""], correctOption: "")
     
     // MARK: - Outlets
     
+    // Display questions here
     @IBOutlet weak var questionField: UILabel!
+    
+    // Display result here
+    @IBOutlet weak var resultsField: UILabel!
+    
+    // Collection storing all available option buttons
     @IBOutlet var optionButtons:[UIButton]!
+    
     @IBOutlet weak var playAgainButton: UIButton!
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Load and initialize sound
         soundManager.loadGameStartSound()
+        soundManager.loadTapSound()
         soundManager.playGameStartSound()
+        
+        // Reformat Button Styles
+        for button in optionButtons{
+            button.layer.cornerRadius = 8
+        }
+        
+        playAgainButton.layer.cornerRadius = 8
+        
+        // Get first question
         trivia = quizManager.getTrivia()
+        
+        // Display question
         questionField.text = trivia.question
-        optionButtons[0].setTitle(trivia.options[0], for: UIControl.State.normal)
-        optionButtons[1].setTitle(trivia.options[1], for: UIControl.State.normal)
+        
+        // Place options from trivia instance of question object
+        quizManager.replaceButtonLabels(of: optionButtons, from: trivia)
+        
+        resultsField.isHidden = true
         playAgainButton.isHidden = true
     }
     
     // MARK: - Helpers
     
     func nextRound() {
+        
+        // Check Quiz settings
         if quizManager.settings.questionsAsked == quizManager.settings.questionsPerRound {
-            // Game is over
-            questionField.text = quizManager.displayScore(andHide: optionButtons[0], and: optionButtons[1], andShow: playAgainButton)
+            
+            // Game is over. We display the score and hide the option buttons
+            questionField.text = quizManager.displayScore(andHide: optionButtons, andShow: playAgainButton)
+            
+            // Reset Quiz settings
+            quizManager.settings.questionsAsked = 0
+            quizManager.settings.correctQuestions = 0
+            quizManager.previousQuestionsIDs = []
+            
+            // Change Button label
+            playAgainButton.setTitle("Play Again", for: UIControl.State.normal)
+            
+            resultsField.isHidden = true
+        
         } else {
-            // Continue game
+            
+            // Check last question is being displayed. Show "View Results" instead of "Next Question" if so.
+            if quizManager.settings.questionsAsked == 3 {
+                
+                playAgainButton.setTitle("View Results", for: UIControl.State.normal)
+            
+            } else {
+                
+                playAgainButton.setTitle("Next Question", for: UIControl.State.normal)
+            }
+            
+            // Get new question object and replace option buttons with the ones stored in trivia object
             trivia = quizManager.getTrivia()
             questionField.text = trivia.question
-            optionButtons[0].setTitle(trivia.options[0], for: UIControl.State.normal)
-            optionButtons[1].setTitle(trivia.options[1], for: UIControl.State.normal)
-        }
-    }
-    
-    func loadNextRound(delay seconds: Int) {
-        // Converts a delay in seconds to nanoseconds as signed 64 bit integer
-        let delay = Int64(NSEC_PER_SEC * UInt64(seconds))
-        // Calculates a time value to execute the method given current time and delay
-        let dispatchTime = DispatchTime.now() + Double(delay) / Double(NSEC_PER_SEC)
-        
-        // Executes the nextRound method at the dispatch time on the main queue
-        DispatchQueue.main.asyncAfter(deadline: dispatchTime) {
-            self.nextRound()
+            quizManager.replaceButtonLabels(of: optionButtons, from: trivia)
+            resultsField.isHidden = true
+            
+            // Reset option buttons original style
+            for button in optionButtons{
+                button.backgroundColor = UIColor(red: 0.047, green: 0.475, blue: 0.588, alpha: 1)
+                button.layer.opacity = 1.0
+            }
         }
     }
     
     // MARK: - Actions
     
     @IBAction func checkAnswer(_ sender: UIButton) {
+        
         // Increment the questions asked counter
         quizManager.settings.questionsAsked += 1
+        playAgainButton.isHidden = false
         
-        let result = quizManager.checkAnswer(from: sender, for: optionButtons[0], and: optionButtons[1], against: trivia.correctOption)
-        questionField.text = result
+        // RChange opacity of options
+        for button in optionButtons{
+            button.layer.opacity = 0.25
+        }
         
-        loadNextRound(delay: 1)
+        // Check answer reading the tapped button against the correct option stored in the question object called "trivia"
+        let result = quizManager.checkAnswer(from: sender, against: trivia.correctOption)
+        
+        // Apply returned result to result field
+        resultsField.text = result.label
+        
+        // Apply returned color to text and button
+        resultsField.textColor = result.color
+        sender.backgroundColor = result.color
+        
+        // Check if result is incorrect.
+        if !result.correct{
+            
+            // Look for the correct option for the current question object
+            for option in optionButtons{
+                
+                if trivia.correctOption.isEqual(option.titleLabel!.text){
+                    
+                    // Highlight correct option
+                    option.backgroundColor = UIColor(red: 0.000, green: 0.576, blue: 0.529, alpha: 1)
+                    option.layer.opacity = 1
+                    
+                }
+            }
+        }
+        
+        // Reset opacity of selected option.
+        sender.layer.opacity = 1
+        
+        resultsField.isHidden = false
     }
     
     
     @IBAction func playAgain(_ sender: UIButton) {
-        // Show the answer buttons
-        optionButtons[0].isHidden = false
-        optionButtons[1].isHidden = false
+        
+        // Next question sound
+        soundManager.playTapSound()
+        
+        // Hide all option buttons
+        for option in optionButtons{
+            option.isHidden = false
+        }
+        
+        // Hide button used to trigger playAgain()
         sender.isHidden = true
         
-        quizManager.settings.questionsAsked = 0
-        quizManager.settings.correctQuestions = 0
         nextRound()
     }
     

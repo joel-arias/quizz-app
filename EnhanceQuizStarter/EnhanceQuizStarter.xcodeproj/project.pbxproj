@@ -10,6 +10,10 @@
 		6F6C54372258DF4F00AF5139 /* SoundManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6C54362258DF4F00AF5139 /* SoundManager.swift */; };
 		6F6C54392258E14500AF5139 /* QuestionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6C54382258E14500AF5139 /* QuestionProvider.swift */; };
 		6F6C543B2258E43100AF5139 /* QuizManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6C543A2258E43100AF5139 /* QuizManager.swift */; };
+		6FC227242262183A003015F6 /* tapMellow.aif in Resources */ = {isa = PBXBuildFile; fileRef = 6FC227232262183A003015F6 /* tapMellow.aif */; };
+		6FC22726226219E9003015F6 /* slidePaper.aif in Resources */ = {isa = PBXBuildFile; fileRef = 6FC22725226219E9003015F6 /* slidePaper.aif */; };
+		6FC22729226220B0003015F6 /* negativeSound.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 6FC22727226220B0003015F6 /* negativeSound.mp3 */; };
+		6FC2272A226220B0003015F6 /* positiveSound.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 6FC22728226220B0003015F6 /* positiveSound.mp3 */; };
 		972A72B12056F06C0059EF4A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972A72B02056F06C0059EF4A /* AppDelegate.swift */; };
 		972A72B32056F06C0059EF4A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972A72B22056F06C0059EF4A /* ViewController.swift */; };
 		972A72B62056F06C0059EF4A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 972A72B42056F06C0059EF4A /* Main.storyboard */; };
@@ -22,6 +26,14 @@
 		6F6C54362258DF4F00AF5139 /* SoundManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundManager.swift; sourceTree = "<group>"; };
 		6F6C54382258E14500AF5139 /* QuestionProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionProvider.swift; sourceTree = "<group>"; };
 		6F6C543A2258E43100AF5139 /* QuizManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizManager.swift; sourceTree = "<group>"; };
+		6FC227232262183A003015F6 /* tapMellow.aif */ = {isa = PBXFileReference; lastKnownFileType = file; name = tapMellow.aif; path = "../../../../../../../Downloads/octave-master/Octave-Sounds/taps/tapMellow.aif"; sourceTree = "<group>"; };
+		6FC22725226219E9003015F6 /* slidePaper.aif */ = {isa = PBXFileReference; lastKnownFileType = file; name = slidePaper.aif; path = "../../../../../../../Downloads/octave-master/Octave-Sounds/slides/slidePaper.aif"; sourceTree = "<group>"; };
+		6FC22727226220B0003015F6 /* negativeSound.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = negativeSound.mp3; path = ../../../../../../../Downloads/IOS_System_Sounds/negativeSound.mp3; sourceTree = "<group>"; };
+		6FC22728226220B0003015F6 /* positiveSound.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = positiveSound.mp3; path = ../../../../../../../Downloads/IOS_System_Sounds/positiveSound.mp3; sourceTree = "<group>"; };
+		6FC2272D2262210E003015F6 /* tapMellow.aif */ = {isa = PBXFileReference; lastKnownFileType = file; path = tapMellow.aif; sourceTree = "<group>"; };
+		6FC2272E2262210E003015F6 /* negativeSound.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = negativeSound.mp3; sourceTree = "<group>"; };
+		6FC2272F2262210E003015F6 /* positiveDound.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = positiveDound.mp3; sourceTree = "<group>"; };
+		6FC227302262210E003015F6 /* slidePaper.aif */ = {isa = PBXFileReference; lastKnownFileType = file; path = slidePaper.aif; sourceTree = "<group>"; };
 		972A72AD2056F06C0059EF4A /* EnhanceQuizStarter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EnhanceQuizStarter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		972A72B02056F06C0059EF4A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		972A72B22056F06C0059EF4A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; wrapsLines = 0; };
@@ -43,6 +55,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6FC2272C2262210D003015F6 /* soundFiles */ = {
+			isa = PBXGroup;
+			children = (
+				972A72C22056F0E40059EF4A /* GameSound.wav */,
+				6FC2272D2262210E003015F6 /* tapMellow.aif */,
+				6FC227302262210E003015F6 /* slidePaper.aif */,
+				6FC2272E2262210E003015F6 /* negativeSound.mp3 */,
+				6FC2272F2262210E003015F6 /* positiveDound.mp3 */,
+			);
+			path = soundFiles;
+			sourceTree = "<group>";
+		};
 		972A72A42056F06C0059EF4A = {
 			isa = PBXGroup;
 			children = (
@@ -68,8 +92,12 @@
 				972A72B72056F06C0059EF4A /* Assets.xcassets */,
 				972A72B92056F06C0059EF4A /* LaunchScreen.storyboard */,
 				972A72BC2056F06C0059EF4A /* Info.plist */,
-				972A72C22056F0E40059EF4A /* GameSound.wav */,
 				6F6C54362258DF4F00AF5139 /* SoundManager.swift */,
+				6FC2272C2262210D003015F6 /* soundFiles */,
+				6FC227232262183A003015F6 /* tapMellow.aif */,
+				6FC22725226219E9003015F6 /* slidePaper.aif */,
+				6FC22727226220B0003015F6 /* negativeSound.mp3 */,
+				6FC22728226220B0003015F6 /* positiveSound.mp3 */,
 				6F6C54382258E14500AF5139 /* QuestionProvider.swift */,
 				6F6C543A2258E43100AF5139 /* QuizManager.swift */,
 			);
@@ -136,9 +164,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6FC2272A226220B0003015F6 /* positiveSound.mp3 in Resources */,
+				6FC22729226220B0003015F6 /* negativeSound.mp3 in Resources */,
 				972A72C32056F0E40059EF4A /* GameSound.wav in Resources */,
+				6FC22726226219E9003015F6 /* slidePaper.aif in Resources */,
 				972A72BB2056F06C0059EF4A /* LaunchScreen.storyboard in Resources */,
 				972A72B82056F06C0059EF4A /* Assets.xcassets in Resources */,
+				6FC227242262183A003015F6 /* tapMellow.aif in Resources */,
 				972A72B62056F06C0059EF4A /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
