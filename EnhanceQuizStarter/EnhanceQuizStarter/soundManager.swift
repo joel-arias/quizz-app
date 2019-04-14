@@ -29,19 +29,19 @@ class SoundManager{
     }
     
     func loadTapSound(){
-        let path = Bundle.main.path(forResource: "tapMellow", ofType: "aif")
+        let path = Bundle.main.path(forResource: "tapSound", ofType: "mp3")
         let soundUrl = URL(fileURLWithPath: path!)
         AudioServicesCreateSystemSoundID(soundUrl as CFURL, &tapSound)
     }
     
     func loadNegativeSound(){
-        let path = Bundle.main.path(forResource: "negativeSound", ofType: "mp3")
+        let path = Bundle.main.path(forResource: "errorSound", ofType: "mp3")
         let soundUrl = URL(fileURLWithPath: path!)
         AudioServicesCreateSystemSoundID(soundUrl as CFURL, &negativeSound)
     }
     
     func loadPositiveSound(){
-        let path = Bundle.main.path(forResource: "positiveSound", ofType: "mp3")
+        let path = Bundle.main.path(forResource: "correctSound", ofType: "mp3")
         let soundUrl = URL(fileURLWithPath: path!)
         AudioServicesCreateSystemSoundID(soundUrl as CFURL, &positiveSound)
     }

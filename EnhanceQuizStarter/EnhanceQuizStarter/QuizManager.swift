@@ -86,16 +86,22 @@ class QuizManager{
         return("Way to go!\nYou got \(settings.correctQuestions) out of \(settings.questionsPerRound) correct!")
     }
     
-    func checkAnswer(from sender: UIButton, against correctAnswer: String) -> (correct: Bool, label: String, color: UIColor){
+    func checkAnswer(from sender: UIButton?, against correctAnswer: String, runOutofTime: Bool? = false) -> (correct: Bool, label: String, color: UIColor){
         
         // Check if the UIButton matches the correct answer in the question object
-        if (correctAnswer.isEqual(sender.titleLabel!.text!) ) {
+        if (correctAnswer.isEqual(sender?.titleLabel!.text!) ) {
             
             settings.correctQuestions += 1
             soundManager.loadPositiveSound()
             soundManager.playPositiveSound()
             return (correct: true, label: "Correct!", color: settings.correctColor )
 
+        } else if runOutofTime == true{
+            
+            soundManager.loadNegativeSound()
+            soundManager.playNegativeSound()
+            return (correct: false, label: "Sorry, you've run out of time", color: settings.wrongColor )
+            
         } else {
             
             soundManager.loadNegativeSound()
