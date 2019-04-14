@@ -69,41 +69,29 @@ class ViewController: UIViewController {
     @objc func updateTimer(){
         
         if seconds <= 1 {
-            //seconds = 15
+            
+            // Stop timer
             timer.invalidate()
             
-            let result = quizManager.checkAnswer(from: nil, against: trivia.correctOption, runOutofTime: true)
-            
+            // Increment the questions asked counter
             quizManager.settings.questionsAsked += 1
             
-            // Change opacity of options
-            for button in optionButtons{
-                button.layer.opacity = 0.25
-                button.isEnabled = false
-            }
             
-            // Apply returned result to result field
-            resultsField.text = result.label
+            // Check answer to know which is the correct answer
+            let result = quizManager.checkAnswer(from: nil, against: trivia.correctOption, runOutofTime: true)
             
-            // Apply returned color to text and button
-            resultsField.textColor = result.color
+            // Show correct answer and hide the rest of the options. Display message indicating that you've run out of time.
+            quizManager.changeButtonsState(of: optionButtons, and: resultsField, for: trivia, using: result, checkSender: nil)
             
-            // Look for the correct option for the current question object
-            for option in optionButtons{
-                
-                if trivia.correctOption.isEqual(option.titleLabel!.text){
-                    
-                    // Highlight correct option
-                    option.backgroundColor = UIColor(red: 0.000, green: 0.576, blue: 0.529, alpha: 1)
-                    option.layer.opacity = 1
-                    
-                }
-            }
-            
+            // Show "Next Question" button
             playAgainButton.isHidden = false
             
         } else {
+            
+            // Decrease 1 second
             seconds -= 1
+            
+            // Display seconds left
             resultsField.text = "\(seconds)"
         }
         
@@ -143,12 +131,11 @@ class ViewController: UIViewController {
             resultsField.text = "\(seconds)"
             runTimer()
             
-            // Get new question object and replace option buttons with the ones stored in trivia object
+            // Get new question object and replace option buttons label with the new ones
             trivia = quizManager.getTrivia()
             questionField.text = trivia.question
             quizManager.replaceButtonLabels(of: optionButtons, from: trivia)
             
-            // Hide Results and Next/PlayAgainButton
             resultsField.isHidden = false
             playAgainButton.isHidden = true
             
@@ -164,9 +151,11 @@ class ViewController: UIViewController {
     // MARK: - Actions
     
     @IBAction func checkAnswer(_ sender: UIButton) {
+        
         // Increment the questions asked counter
         quizManager.settings.questionsAsked += 1
         
+        // Stop timer
         timer.invalidate()
         
         playAgainButton.isHidden = false
@@ -180,30 +169,9 @@ class ViewController: UIViewController {
         // Check answer reading the tapped button against the correct option stored in the question object called "trivia"
         let result = quizManager.checkAnswer(from: sender, against: trivia.correctOption)
         
-        // Apply returned result to result field
-        resultsField.text = result.label
-        
-        // Apply returned color to text and button
-        resultsField.textColor = result.color
-        sender.backgroundColor = result.color
-        sender.alpha = 1
-        
-        // Check if result is incorrect.
-        if !result.correct{
-            
-            // Look for the correct option for the current question object
-            for option in optionButtons{
-                
-                if trivia.correctOption.isEqual(option.titleLabel!.text){
-                    
-                    // Highlight correct option
-                    option.backgroundColor = UIColor(red: 0.000, green: 0.576, blue: 0.529, alpha: 1)
-                    option.layer.opacity = 1
-                    
-                }
-            }
-        }
-        
+        // Change all buttons state styles according to the result
+        quizManager.changeButtonsState(of: optionButtons, and: resultsField, for: trivia, using: result, checkSender: sender)
+    
         // Reset opacity of selected option.
         sender.layer.opacity = 1
         

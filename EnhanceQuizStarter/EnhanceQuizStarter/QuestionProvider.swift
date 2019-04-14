@@ -25,14 +25,16 @@ struct Question {
 
 struct QuestionProvider{
     
+    // Store all available questions
     var arrayOfQuestions: [Question] =
         [
             Question(id:1, question: "Who designed the Universe typeface?", options: ["Adrian Frutiger", "Erik Spiekermann", "Max Bill", "Matthew Carter"], correctOption: "Adrian Frutiger"),
             Question(id:2, question: "Who wrote the book RAYUELA?", options: ["Julio Cortázar", "Victor Hugo", "William Shakespear"], correctOption: "Julio Cortázar"),
             Question(id:3, question: "What is the capital of Spain?", options: ["Madrid", "Valencia", "Bilbao", "Sevilla"], correctOption: "Madrid"),
-            Question(id:4, question: "Which of the following paintings is NOT from Pablo Picasso?", options: ["Les Demoiselles d'Avignon", "The Weeping Woman", "Harlequin with Guitar", "The Old Guitarist"], correctOption: "Harlequin with Guitar")
+            Question(id:4, question: "Which of the following paintings is NOT from Pablo Picasso?", options: ["Les Demoiselles d'Avignon", "Harlequin with Guitar", "The Old Guitarist"], correctOption: "Harlequin with Guitar")
     ]
     
+    // Get random question
     func randomQuestion() -> Question {
         let randomNumber = GKRandomSource.sharedRandom().nextInt(upperBound: arrayOfQuestions.count)
         return arrayOfQuestions[randomNumber]

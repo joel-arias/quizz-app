@@ -27,6 +27,8 @@ class QuizManager{
     var previousQuestionsIDs: [Int] = []
     
     init(){
+        
+        // Get first random question
         self.selectedQuestion = questionProvider.randomQuestion()
     }
     
@@ -47,7 +49,7 @@ class QuizManager{
         
     }
     
-    // Replace UIButton used to display the options with the labels related to the question displayed
+    // Feed UIButtons with the options inside question object. Remove object that are not necessary
     func replaceButtonLabels(of collectionOfButtons: [UIButton], from question: Question) {
         
         // Go through each of them to assign the correct title
@@ -108,6 +110,37 @@ class QuizManager{
             soundManager.playNegativeSound()
             return (correct:false, label: "Sorry, wrong answer!", color: settings.wrongColor )
             
+        }
+        
+    }
+    
+    func changeButtonsState(of buttons: [UIButton], and field: UILabel, for question: Question, using result: (correct: Bool, label: String, color: UIColor), checkSender sender: UIButton?){
+        
+        // Change opacity of options
+        for button in buttons{
+            button.layer.opacity = 0.25
+            button.isEnabled = false
+        }
+        
+        // Apply returned result to result field
+        field.text = result.label
+        
+        // Apply returned color to text and button
+        field.textColor = result.color
+        
+        // If sender then change its background color
+        sender?.backgroundColor = result.color
+        
+        // Look for the correct option for the current question object
+        for option in buttons{
+            
+            if question.correctOption.isEqual(option.titleLabel!.text){
+                
+                // Highlight correct option
+                option.backgroundColor = UIColor(red: 0.000, green: 0.576, blue: 0.529, alpha: 1)
+                option.layer.opacity = 1
+                
+            }
         }
     }
 }
