@@ -15,6 +15,8 @@ class ViewController: UIViewController {
     let soundManager = SoundManager(gameSound: 1, tapSound: 1, negativeSound: 1, positiveSound: 1)
     let quizManager = QuizManager()
     var trivia = Question(id:0, question: "", options: ["", ""], correctOption: "")
+    let correctColor = UIColor(red: 0.000, green: 0.576, blue: 0.529, alpha: 1)
+    let wrongColor = UIColor(red: 1, green: 0.5, blue: 0.5, alpha: 1)
     var seconds = 15
     var timer = Timer()
     
@@ -54,7 +56,7 @@ class ViewController: UIViewController {
         questionField.text = trivia.question
         
         // Place options from trivia instance of question object
-        quizManager.replaceButtonLabels(of: optionButtons, from: trivia)
+        setOptionButtonReady(of: optionButtons, from: trivia)
         
         resultsField.isHidden = false
         playAgainButton.isHidden = true
@@ -81,7 +83,7 @@ class ViewController: UIViewController {
             let result = quizManager.checkAnswer(from: nil, against: trivia.correctOption, runOutofTime: true)
             
             // Show correct answer and hide the rest of the options. Display message indicating that you've run out of time.
-            quizManager.changeButtonsState(of: optionButtons, and: resultsField, for: trivia, using: result, checkSender: nil)
+            changeButtonsState(of: optionButtons, and: resultsField, for: trivia, using: result, checkSender: nil)
             
             // Show "Next Question" button
             playAgainButton.isHidden = false
@@ -97,16 +99,86 @@ class ViewController: UIViewController {
         
     }
     
+    // Feed UIButtons labels with the options inside question object. Remove UIButtons that are not necessary
+    func setOptionButtonReady(of collectionOfButtons: [UIButton], from question: Question) {
+        
+        // Go through each of them to assign the correct title
+        for option in collectionOfButtons{
+            
+            // Collecti index of option button within the collection of UIButtons
+            let index: Int = collectionOfButtons.firstIndex(of: option)!
+            
+            // Check if current index exist in question object options.
+            let isIndexValid = question.options.indices.contains(index)
+            
+            if isIndexValid{
+                
+                // Use index to select the appropriate option from the question object and set it as title
+                option.setTitle(question.options[index], for: UIControl.State.normal)
+                
+            } else {
+                
+                // If there is no valid index then we can hide the UIButton
+                option.isHidden = true
+                
+            }
+        }
+    }
+    
+    func changeButtonsState(of buttons: [UIButton], and field: UILabel, for question: Question, using result: (correct: Bool, label: String), checkSender sender: UIButton?){
+        
+        // Change opacity of options
+        for button in buttons{
+            button.layer.opacity = 0.25
+            button.isEnabled = false
+        }
+        
+        // Apply returned result to result field
+        field.text = result.label
+        
+        // Apply returned color to text and button
+        let color: UIColor
+        
+        if result.correct {
+            color = correctColor
+        } else {
+            color = wrongColor
+        }
+        
+        field.textColor = color
+        
+        // If sender then change its background color
+        sender?.backgroundColor = color
+        
+        // Look for the correct option for the current question object
+        for option in buttons{
+            
+            if question.correctOption.isEqual(option.titleLabel!.text){
+                
+                // Highlight correct option
+                option.backgroundColor = UIColor(red: 0.000, green: 0.576, blue: 0.529, alpha: 1)
+                option.layer.opacity = 1
+                
+            }
+        }
+    }
+    
     func nextRound() {
-        if quizManager.settings.questionsAsked == quizManager.settings.questionsPerRound {
+        if quizManager.endGame() {
             
             // Game is over. We display the score and hide the option buttons
-            questionField.text = quizManager.displayScore(andHide: optionButtons, andShow: playAgainButton)
+            questionField.text = quizManager.displayScore()
+            
+            // Hide all option buttons
+            for option in optionButtons{
+                option.isHidden = true
+            }
+            
+            // Display play again button
+            playAgainButton.isHidden = false
             
             // Reset Quiz settings
-            quizManager.settings.questionsAsked = 0
-            quizManager.settings.correctQuestions = 0
-            quizManager.previousQuestionsIDs = []
+            quizManager.resetQuiz()
             
             // Change Button label
             playAgainButton.setTitle("Play Again", for: UIControl.State.normal)
@@ -134,7 +206,7 @@ class ViewController: UIViewController {
             // Get new question object and replace option buttons label with the new ones
             trivia = quizManager.getTrivia()
             questionField.text = trivia.question
-            quizManager.replaceButtonLabels(of: optionButtons, from: trivia)
+            setOptionButtonReady(of: optionButtons, from: trivia)
             
             resultsField.isHidden = false
             playAgainButton.isHidden = true
@@ -166,11 +238,12 @@ class ViewController: UIViewController {
             button.isEnabled = false
         }
         
+        
         // Check answer reading the tapped button against the correct option stored in the question object called "trivia"
-        let result = quizManager.checkAnswer(from: sender, against: trivia.correctOption)
+        let result = quizManager.checkAnswer(from: sender.titleLabel!.text!, against: trivia.correctOption)
         
         // Change all buttons state styles according to the result
-        quizManager.changeButtonsState(of: optionButtons, and: resultsField, for: trivia, using: result, checkSender: sender)
+        changeButtonsState(of: optionButtons, and: resultsField, for: trivia, using: result, checkSender: sender)
     
         // Reset opacity of selected option.
         sender.layer.opacity = 1

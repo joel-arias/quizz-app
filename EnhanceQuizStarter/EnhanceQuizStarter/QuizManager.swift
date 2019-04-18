@@ -49,98 +49,48 @@ class QuizManager{
         
     }
     
-    // Feed UIButtons with the options inside question object. Remove object that are not necessary
-    func replaceButtonLabels(of collectionOfButtons: [UIButton], from question: Question) {
-        
-        // Go through each of them to assign the correct title
-        for option in collectionOfButtons{
-            
-            // Collecti index of option button within the collection of UIButtons
-            let index: Int = collectionOfButtons.firstIndex(of: option)!
-            
-            // Check if current index exist in question object options.
-            let isIndexValid = question.options.indices.contains(index)
-            
-            if isIndexValid{
-                
-                // Use index to select the appropriate option from the question object and set it as title
-                option.setTitle(question.options[index], for: UIControl.State.normal)
-                
-            } else {
-                
-                // If there is no index then we can hide the option button
-                option.isHidden = true
-                
-            }
+    func resetQuiz(){
+        settings.questionsAsked = 0
+        settings.correctQuestions = 0
+        previousQuestionsIDs = []
+    }
+    
+    func endGame() -> Bool{
+        if settings.questionsAsked == settings.questionsPerRound {
+            return true
+        } else {
+            return false
         }
     }
     
-    func displayScore(andHide allOptionButtons: [UIButton], andShow playAgainButton: UIButton) -> String {
-        
-        // Hide all option buttons
-        for option in allOptionButtons{
-            option.isHidden = true
-        }
-        
-        // Display play again button
-        playAgainButton.isHidden = false
+    func displayScore() -> String {
         
         return("Way to go!\nYou got \(settings.correctQuestions) out of \(settings.questionsPerRound) correct!")
     }
     
-    func checkAnswer(from sender: UIButton?, against correctAnswer: String, runOutofTime: Bool? = false) -> (correct: Bool, label: String, color: UIColor){
+    func checkAnswer(from sender: String?, against correctAnswer: String, runOutofTime: Bool? = false) -> (correct: Bool, label: String){
         
         // Check if the UIButton matches the correct answer in the question object
-        if (correctAnswer.isEqual(sender?.titleLabel!.text!) ) {
+        if (correctAnswer.isEqual(sender) ) {
             
             settings.correctQuestions += 1
             soundManager.loadPositiveSound()
             soundManager.playPositiveSound()
-            return (correct: true, label: "Correct!", color: settings.correctColor )
+            return (correct: true, label: "Correct!")
 
         } else if runOutofTime == true{
             
             soundManager.loadNegativeSound()
             soundManager.playNegativeSound()
-            return (correct: false, label: "Sorry, you've run out of time", color: settings.wrongColor )
+            return (correct: false, label: "Sorry, you've run out of time")
             
         } else {
             
             soundManager.loadNegativeSound()
             soundManager.playNegativeSound()
-            return (correct:false, label: "Sorry, wrong answer!", color: settings.wrongColor )
+            return (correct:false, label: "Sorry, wrong answer!")
             
         }
         
-    }
-    
-    func changeButtonsState(of buttons: [UIButton], and field: UILabel, for question: Question, using result: (correct: Bool, label: String, color: UIColor), checkSender sender: UIButton?){
-        
-        // Change opacity of options
-        for button in buttons{
-            button.layer.opacity = 0.25
-            button.isEnabled = false
-        }
-        
-        // Apply returned result to result field
-        field.text = result.label
-        
-        // Apply returned color to text and button
-        field.textColor = result.color
-        
-        // If sender then change its background color
-        sender?.backgroundColor = result.color
-        
-        // Look for the correct option for the current question object
-        for option in buttons{
-            
-            if question.correctOption.isEqual(option.titleLabel!.text){
-                
-                // Highlight correct option
-                option.backgroundColor = UIColor(red: 0.000, green: 0.576, blue: 0.529, alpha: 1)
-                option.layer.opacity = 1
-                
-            }
-        }
     }
 }
